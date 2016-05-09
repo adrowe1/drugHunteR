@@ -1,0 +1,25 @@
+Package: drugHunteR
+Type: Package
+Title: Drug Hunter functions
+Version: 0.1.0
+Author: Alexander D. Rowe
+Maintainer: Alexander D. Rowe <adrowe1@gmail.com>
+Description: Functions supporting the Drug Hunter high throughput drug
+screening app.
+URL: https://github.com/adrowe1/drugHunteR
+BugReports: https://github.com/adrowe1/drugHunteR/issues
+Imports:
+    dplyr,
+    magrittr,
+    splines,
+    readr,
+    zoo,
+    lazyeval,
+    stringr
+Suggests:
+    ggplot2,
+    viridis,
+    knitr,
+    rmarkdown
+License: MIT + file LICENSE
+LazyData: TRUE
