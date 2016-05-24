@@ -2,3 +2,8 @@
 
 export("%w/o%")
 export(createChebiLink)
+export(importDispensingFileEcho550)
+import(dplyr)
+import(magrittr)
+import(readr)
+import(tools)
