@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Alexander D. Rowe
 Maintainer: Alexander D. Rowe <adrowe1@gmail.com>
 Description: Functions supporting the Drug Hunter high throughput drug
-screening app.
+    screening app.
 URL: https://github.com/adrowe1/drugHunteR
 BugReports: https://github.com/adrowe1/drugHunteR/issues
 Imports:
@@ -23,3 +23,4 @@ Suggests:
     rmarkdown
 License: MIT + file LICENSE
 LazyData: TRUE
+RoxygenNote: 5.0.1
