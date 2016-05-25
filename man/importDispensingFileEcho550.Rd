@@ -11,7 +11,7 @@ importDispensingFileEcho550(inputPath)
 }
 \value{
 List containing dispensing data in position 1,
-extra information in position 2, and an md5 checksum in position 3
+extra information in position 2, with an md5 checksum appenedd as the final column
 }
 \description{
 Import the
