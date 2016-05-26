@@ -23,16 +23,16 @@ zipFileContents <- function(pathToZipFile){
 
     allChecksums <- NA
   } else {
-    # list all files in zip
+    # list all files in zip -  NB need to unzip to tmp to prevent files piling up in app
     allFiles <- pathToZipFile %>%
-      unzip(list = TRUE) %>%
+      unzip(list = TRUE, exdir = tmpdir) %>%
       use_series(`Name`) %>%
       grep("^_", ., invert=TRUE, value=TRUE) %>%
       grep(".csv$", ., value=TRUE)
 
-    # get checksums of all files
+    # get checksums of all files -  NB need to unzip to tmp to prevent files piling up in app
     allChecksums <- pathToZipFile %>%
-      unzip(files=allFiles) %>%
+      unzip(files=allFiles, exdir = tmpdir) %>%
       tools::md5sum() %>%
       unname()
   }
