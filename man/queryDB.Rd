@@ -18,6 +18,6 @@ A data frame (tbl_df) containing the query results
 Run an SQL query string on the database
 }
 \examples{
-results <- queryDB(dbType, dbPath, SQLstring)
+results <- queryDB(dbPath, SQLstring)
 }
 

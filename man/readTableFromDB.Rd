@@ -18,6 +18,6 @@ A data frame (tbl_df) containing the table
 Read full contents of a single table from the database
 }
 \examples{
-results <- readTableFromDB(dbType, dbPath, tableName)
+results <- readTableFromDB(dbPath, tableName)
 }
 

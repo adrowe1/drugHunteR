@@ -58,7 +58,7 @@ writeTableToDB <- function(dbPath, tableName, inboundData) {
 #' @import RSQLite magrittr dplyr
 #'
 #' @examples
-#' results <- readTableFromDB(dbType, dbPath, tableName)
+#' results <- readTableFromDB(dbPath, tableName)
 readTableFromDB <- function(dbPath, tableName) {
   # open connection
   con <- dbConnect(RSQLite::SQLite(), dbname=dbPath)
@@ -87,7 +87,7 @@ readTableFromDB <- function(dbPath, tableName) {
 #' @import RSQLite magrittr dplyr
 #'
 #' @examples
-#' results <- queryDB(dbType, dbPath, SQLstring)
+#' results <- queryDB(dbPath, SQLstring)
 queryDB <- function(dbPath, SQLstring) {
   # open connection
   con <- dbConnect(RSQLite::SQLite(), dbname=dbPath)
