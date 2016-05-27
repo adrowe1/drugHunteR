@@ -12,15 +12,18 @@
 #' @return single Boolean value for matching of column names and types
 #' between the input data frame and the target database table
 #' @export
-#' @import RSQLite magrittr dplyr
+#' @import RSQLite magrittr dplyr DBI
 #'
 #' @examples
 #' writeTableToDB(dbPath, tableName, inboundData)
-writeTableToDB <- function(dbPath, tableName, inboundData) { # FIXME issue here when called from shiny.. what is it?
+writeTableToDB <- function(dbPath, tableName, inboundData) {
   # open connection
   con <- dbConnect(RSQLite::SQLite(), dbname=dbPath)
   # get the column names and types of the database table
   tmp <- dbReadTable(conn=con, name=tableName)
+  # disconnect
+  dbDisconnect(con)
+  # check that things match
   colnamesExisting <- tmp %>% colnames()
   coltypesExisting <- tmp %>% sapply(class) %>% unname
   # get the column names and types of the input table
@@ -29,10 +32,15 @@ writeTableToDB <- function(dbPath, tableName, inboundData) { # FIXME issue here 
   # test all OK
   tablesMatch <- c(colnamesExisting == colnamesInput, coltypesExisting == coltypesInput) %>% all
   # write to table if the table names and types match, otherwise do nothing
-  if (tablesMatch)
-    dbWriteTable(conn=con, name=tableName, inboundData, append=TRUE, row.names=FALSE)
-  # disconnect
-  dbDisconnect(con)
+  if (tablesMatch) {
+    # open connection
+    con <- dbConnect(RSQLite::SQLite(), dbname=dbPath)
+    # write to table - NB NEED TO CHANGE tbl_df to raw data frame
+    DBI::dbWriteTable(conn=con, name=tableName, (inboundData %>% as.data.frame()), append=TRUE, row.names=FALSE)
+    # disconnect
+    dbDisconnect(con)
+  }
+
 
   # return TRUE/FALSE for table column names and classes matching - can be used in shiny validate/need later
   tablesMatch
@@ -55,7 +63,7 @@ writeTableToDB <- function(dbPath, tableName, inboundData) { # FIXME issue here 
 #'
 #' @return A data frame (tbl_df) containing the table
 #' @export
-#' @import RSQLite magrittr dplyr
+#' @import RSQLite magrittr dplyr DBI
 #'
 #' @examples
 #' results <- readTableFromDB(dbPath, tableName)
@@ -84,7 +92,7 @@ readTableFromDB <- function(dbPath, tableName) {
 #' @return A data frame (tbl_df) containing the query results
 #'
 #' @export
-#' @import RSQLite magrittr dplyr
+#' @import RSQLite magrittr dplyr DBI
 #'
 #' @examples
 #' results <- queryDB(dbPath, SQLstring)

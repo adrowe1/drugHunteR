@@ -31,6 +31,9 @@ importDispensingFileEcho550 <- function(inputPath) {
   # retain only data - removing tails
   dat %<>% filter(!is.na(`Transfer Volume`))
 
+  # fix column names so that the database names match the imported (s/ /./g)
+  colnames(dat) <- dat %>% colnames() %>% str_replace_all(" ", ".")
+
   # checksum
   checksum <- tools::md5sum(inputPath) %>% unname()
 
@@ -106,12 +109,15 @@ importPlateReaderDataEnvision <- function(inputPath, plateRowCount=16, plateColC
 
   dat %<>% gather(col, value, -row) %>% unite(well, row, col, sep="")
 
+  # fix column type for value
+  dat$value %<>% as.numeric()
+
   # checksum
   checksum <- tools::md5sum(inputPath) %>% unname()
 
   # append checksum to datasets
   dat$checksum <- checksum
-  dat$`Keep Flag` <- TRUE
+  dat$`Keep.Flag` <- as.integer(1)
   meta$checksum <- checksum
   # append filename to meta
   meta$filename <- basename(inputPath)
@@ -201,7 +207,7 @@ putChosenFilesIntoDatabase <- function(fileList, chosenIndividual, fileClassifie
     # write to data table
     writeTableToDB(dbPath, content$dbDataTable, imported[[1]])
     # write to metadata table
-    writeTableToDB(dbPath, content$dbDMetaTable, imported[[2]])
+    writeTableToDB(dbPath, content$dbMetaTable, imported[[2]])
   }
 
 
