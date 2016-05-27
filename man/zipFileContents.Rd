@@ -4,7 +4,7 @@
 \alias{zipFileContents}
 \title{Get Zip File Contents}
 \usage{
-zipFileContents(pathToZipFile)
+zipFileContents(pathToZipFile, tmpdir = tempDirectory)
 }
 \arguments{
 \item{pathToZipFile}{}

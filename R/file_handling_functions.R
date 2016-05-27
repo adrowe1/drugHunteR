@@ -15,8 +15,8 @@
 #' @examples
 #' zipFileContents(pathToZipFile)
 #'
-zipFileContents <- function(pathToZipFile){
-  # path to zip file - probably inputFiles()$datapath in shiny reactive context
+zipFileContents <- function(pathToZipFile, tmpdir=tempDirectory){
+  # path to zip file - usually inputFiles()$datapath in shiny reactive context
 
   if (is.null(pathToZipFile) ){
     allFiles <- NA

@@ -119,3 +119,106 @@ importPlateReaderDataEnvision <- function(inputPath, plateRowCount=16, plateColC
   # return
   list(dat, meta)
 }
+
+
+
+
+# match filename to database tables ------------
+#' Match filename to database table
+#'
+#' @param fileList vector of input files
+#' @param fileClassifiers data frame of file classifiers and related database tables
+#'
+#' @return
+#' @export
+#' @import stringr dplyr magrittr
+#'
+#' @examples
+#' matchFilenameToTable(fileList, fileClassifiers)
+matchFilenameToTable <- function(fileList, fileClassifiers) {
+  # lazy solution as I can't get it to work with lapply
+  patternMatch <- NULL
+  for (pattern in fileClassifiers$pattern){
+    if (any(str_detect(fileList, pattern))) {
+      tmp <- data_frame(file=fileList[str_detect(fileList, pattern)], pattern=pattern)
+      patternMatch <- bind_rows(patternMatch, tmp)
+    }
+  }
+  # join tables
+  output <- left_join(patternMatch, fileClassifiers)
+  # return
+  output
+}
+
+
+
+
+
+
+# classify import files correctly and write to database ------------------
+#' Put data from chosen file into correct database table
+#'
+#' @param fileList
+#' @param fileClassifiers
+#' @param dbPath
+#' @param pathToZipFile
+#' @param tmpdir
+#' @param chosenIndividual input$dropdownSampleGroups
+#'
+#' @return
+#' @export
+#' @import utils magrittr dplyr
+#'
+#' @examples
+#' putChosenFilesIntoDatabase(fileList, chosenIndividual, fileClassifiers, dbPath, pathToZipFile, tmpdir=tempDirectory)
+#'
+putChosenFilesIntoDatabase <- function(fileList, chosenIndividual, fileClassifiers, dbPath, pathToZipFile, tmpdir=tempDirectory){
+
+  # match filename to classifiers and extract name from matching value, using this as the basis for defining the recipient table
+  filematching <- matchFilenameToTable(fileList, fileClassifiers)
+
+  # for each row in fileList import
+  for (row in 1:nrow(filematching)) {
+    content <- filematching[row,]
+    # get file list and identify complete path to file
+    filePath <- pathToZipFile %>%
+      unzip(list = TRUE, exdir = tmpdir) %>%
+      use_series(`Name`) %>%
+      grep("^_", ., invert=TRUE, value=TRUE) %>%
+      grep(".csv$", ., value=TRUE) %>%
+      grep(content$file, ., value=TRUE) %>%
+      grep(chosenIndividual, ., value=TRUE)
+    # unzip file and import data by type
+    if (content$type=="dispensing") {
+      imported <- pathToZipFile %>%
+        unzip(files=filePath, exdir = tmpdir) %>%
+        importDispensingFileEcho550()
+    } else if (content$type=="plate") {
+      imported <- pathToZipFile %>%
+        unzip(files=filePath, exdir = tmpdir) %>%
+        importPlateReaderDataEnvision()
+    }
+    # write to data table
+    writeTableToDB(dbPath, content$dbDataTable, imported[[1]])
+    # write to metadata table
+    writeTableToDB(dbPath, content$dbDMetaTable, imported[[2]])
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

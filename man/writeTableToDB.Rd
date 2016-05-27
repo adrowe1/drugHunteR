@@ -21,6 +21,6 @@ between the input data frame and the target database table
 write a data frame to the database, appending it to an existing sqlite table
 }
 \examples{
-writeTableToDB(dbType, dbPath, tableName, inboundData)
+writeTableToDB(dbPath, tableName, inboundData)
 }
 

@@ -15,8 +15,8 @@
 #' @import RSQLite magrittr dplyr
 #'
 #' @examples
-#' writeTableToDB(dbType, dbPath, tableName, inboundData)
-writeTableToDB <- function(dbPath, tableName, inboundData) {
+#' writeTableToDB(dbPath, tableName, inboundData)
+writeTableToDB <- function(dbPath, tableName, inboundData) { # FIXME issue here when called from shiny.. what is it?
   # open connection
   con <- dbConnect(RSQLite::SQLite(), dbname=dbPath)
   # get the column names and types of the database table
