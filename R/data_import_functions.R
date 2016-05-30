@@ -50,7 +50,6 @@ importDispensingFileEcho550 <- function(inputPath) {
 
 
 
-
 # import plate reader output -------------------
 #' Import plate reader data
 #'
@@ -91,7 +90,7 @@ importPlateReaderDataEnvision <- function(inputPath, plateRowCount=16, plateColC
     is.na %>%
     not %>%
     apply(2, sum) %>%
-    is_less_than(2) %>%
+    is_less_than(nrow(tails)/10) %>% # some slightly differing plate files cause an issue here
     not %>%
     tails[,.] %>%
     set_colnames(c("info", "value"))
@@ -216,7 +215,33 @@ putChosenFilesIntoDatabase <- function(fileList, chosenIndividual, fileClassifie
 
 
 
+# Find all checksums for files which have been imported --------------
+#' List imported file checksums
+#'
+#' Get the checksums for all the
+#'
+#' @param dbPath path to database
+#'
+#' @return data frame of imported checksums in column 1 and imported=TRUE in column 2
+#' @export
+#' @import RSQLite dplyr magrittr
+#'
+#' @examples
+listImportedChecksums <- function(dbPath){
+  # get list of all checksums in imported dispensing files
+  SQLquery <- "SELECT DISTINCT checksum FROM dispensing_metadata"
+  importedDispensing <- queryDB(dbPath, SQLquery)
 
+  # get list of all checksums in imported data files
+  SQLquery <- "SELECT DISTINCT checksum FROM plate_metadata"
+  importedPlate <- queryDB(dbPath, SQLquery)
+
+  # already imported checksums
+  alreadyImported <- bind_rows(importedDispensing, importedPlate) %>% mutate(imported=TRUE)
+
+  # return
+  alreadyImported
+}
 
 
 

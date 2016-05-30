@@ -109,3 +109,18 @@ queryDB <- function(dbPath, SQLstring) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
