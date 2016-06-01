@@ -2,6 +2,7 @@
 
 export("%w/o%")
 export(createChebiLink)
+export(fixWells)
 export(importDispensingFileEcho550)
 export(importPlateReaderDataEnvision)
 export(listImportedChecksums)

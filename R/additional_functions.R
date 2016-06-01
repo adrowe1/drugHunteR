@@ -45,5 +45,29 @@ createChebiLink <- function(cas, name) {
 
 
 
+# Fix well names where inconsistent ----------
+
+
+#' Fix well names
+#'
+#' Pad column numbers in well names so A1 becomes A01
+#' but A16 stays A16
+#'
+#' @param wellString
+#'
+#' @return
+#' @export
+#' @import stringr magrittr
+#'
+#' @examples
+fixWells <- function(wellString){
+  row <- str_replace_all(wellString, "[0-9]", "")
+  col <- str_replace_all(wellString, "[A-Z]", "") %>% str_pad(2, "left", "0")
+
+  paste(row, col, sep="")
+
+}
+
+
 
 
